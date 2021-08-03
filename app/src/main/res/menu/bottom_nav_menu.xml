@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/wanted_person"
+        android:icon="@drawable/wanted_person"
+        android:title="@string/wanted_person" />
+
+    <item
+        android:id="@+id/missing_person"
+        android:icon="@drawable/missing_person"
+        android:title="@string/missing_person" />
+
+    <item
+        android:id="@+id/certificate"
+        android:icon="@drawable/certificate"
+        android:title="@string/certificate" />
+
+</menu>

@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">CRMS</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="wanted_person">Wanted person</string>
+    <string name="missing_person">Missing person</string>
+    <string name="certificate">Certificate</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="name">name</string>
+    <string name="age">age</string>
+    <string name="height">height</string>
+    <string name="sex">sex</string>
+    <string name="select_image">select Image</string>
+    <string name="color">color</string>
+    <string name="description">description</string>
+    <string name="status">status</string>
+    <string name="report">Report</string>
+    <string name="special_place">Special place</string>
+    <string name="kebele">Kebele</string>
+
+    <string-array name="kebele">
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+</resources>

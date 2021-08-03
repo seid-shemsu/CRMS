@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.izhar.crms.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/wanted_person"
+        android:name="com.izhar.crms.ui.wanted.Wanted"
+        android:label="Wanted"
+        tools:layout="@layout/fragment_wanted" />
+    <fragment
+        android:id="@+id/missing_person"
+        android:name="com.izhar.crms.ui.missing.Missing"
+        android:label="Missing"
+        tools:layout="@layout/fragment_missing" />
+    <fragment
+        android:id="@+id/certificate"
+        android:name="com.izhar.crms.ui.certificate.Certificate"
+        android:label="Certificate"
+        tools:layout="@layout/fragment_certificate" />
+
+</navigation>
