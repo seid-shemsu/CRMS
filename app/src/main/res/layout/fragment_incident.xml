@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.incident.Incident">
+    tools:context=".activities.IncidentReport">
 
     <LinearLayout
         android:id="@+id/form"
@@ -16,10 +16,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginVertical="10dp"
-            android:text="please fill the form below"
+            android:text="please fill the form below to report the incident"
             android:textColor="@color/purple_700"
             android:textSize="17sp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -108,11 +112,12 @@
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/photo"
                 android:drawablePadding="10dp"
-                android:inputType="textPersonName" />
+                android:editable="false"
+                android:inputType="none"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/send_request"
+            android:id="@+id/send_report"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

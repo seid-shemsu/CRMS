@@ -34,4 +34,12 @@
         <item>11</item>
         <item>12</item>
     </string-array>
+
+    <string-array name="types">
+        <item>type one</item>
+        <item>type two</item>
+        <item>type three</item>
+        <item>type four</item>
+        <item>type five</item>
+    </string-array>
 </resources>

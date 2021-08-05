@@ -1,5 +1,8 @@
 package com.izhar.crms.objects;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class WantedPerson {
     String id,name, sex, color, description, status;
     String image;
@@ -87,4 +90,6 @@ public class WantedPerson {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
 }

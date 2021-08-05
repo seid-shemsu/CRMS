@@ -19,9 +19,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.izhar.crms.R;
 import com.izhar.crms.objects.WantedPerson;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -69,7 +75,11 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
             image = itemView.findViewById(R.id.image);
             detail = itemView.findViewById(R.id.view_detail);
             detail.setOnClickListener(v -> {
-                showDetail(getAdapterPosition());
+                try {
+                    showDetail(getAdapterPosition());
+                } catch (Exception e) {
+                    Toast.makeText(context,e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             });
         }
     }
@@ -94,8 +104,8 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
         image = dialog.findViewById(R.id.image);
         report = dialog.findViewById(R.id.report);
         name.setText(_person.getName());
-        age.setText(_person.getAge());
-        sex.setText(_person.getAge() + "");
+        sex.setText(_person.getSex());
+        age.setText(_person.getAge() + "");
         color.setText(_person.getColor());
         height.setText(_person.getHeight() + "");
         description.setText(_person.getDescription());
@@ -104,32 +114,49 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
         report.setOnClickListener(v1 -> {
             reportCriminal(_person.getId());
             dialog.dismiss();
+            dialog.setContentView(R.layout.report_criminal);
+            dialog.show();
+            EditText special_place = dialog.findViewById(R.id.special_place);
+            AutoCompleteTextView kebele = dialog.findViewById(R.id.kebele);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.kebele, R.layout.list_item);
+            kebele.setAdapter(adapter);
+            Button report_btn = dialog.findViewById(R.id.report);
+            report_btn.setOnClickListener(v -> {
+                if (kebele.getText().toString().length() > 0 && special_place.getText().toString().length() > 0){
+                    Toast.makeText(context, "Reporting on progress", Toast.LENGTH_SHORT).show();
+                    try {
+                        String url = "http://192.168.137.252:8000/reportCriminal/";
+                        JSONObject object = new JSONObject();
+                        object.put("criminal", _person.toString());
+                        object.put("address", kebele.getText().toString() + " kebele  : " + special_place.getText().toString());
+                        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
+                                url,
+                                object,
+                                response -> {
+                                    Toast.makeText(context, "sending", Toast.LENGTH_SHORT).show();
+                                },
+                                error -> {
+                                    Toast.makeText(context, error.getMessage() + "\nerror", Toast.LENGTH_SHORT).show();
+                                });
+                        RequestQueue queue = Volley.newRequestQueue(context);
+                        queue.add(request);
+                    }
+                    catch (Exception e){
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    dialog.dismiss();
+                }
+                else {
+                    Toast.makeText(context, "please fill the required fields", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
         dialog.show();
 
     }
 
     private void reportCriminal(String id) {
-        Dialog dialog = new Dialog(context);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(R.layout.report_criminal);
-        dialog.show();
-        EditText special_place = dialog.findViewById(R.id.special_place);
-        AutoCompleteTextView kebele = dialog.findViewById(R.id.kebele);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.kebele, R.layout.list_item);
-        kebele.setAdapter(adapter);
-        Button report = dialog.findViewById(R.id.report);
-        report.setOnClickListener(v -> {
-            if (kebele.getText().toString().length() > 0 && special_place.getText().toString().length() > 0){
-                Toast.makeText(context, "Reporting on progress", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-            else {
-                Toast.makeText(context, "please fill the required fields", Toast.LENGTH_SHORT).show();
-            }
-        });
+
 
     }
 }
