@@ -60,7 +60,6 @@ public class IncidentReport extends AppCompatActivity {
         kebele.setAdapter(kebeles);
 
         image.setOnClickListener(v -> {
-            Toast.makeText(this, "hell", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(intent, 1010);
         });
@@ -68,7 +67,7 @@ public class IncidentReport extends AppCompatActivity {
         send = findViewById(R.id.send_report);
         send.setOnClickListener(v -> {
             try {
-                String url = "http://192.168.137.252:8000/addincident/";
+                //String url = "http://10.240.72.142:8000/addincident/";
                 JSONObject object = new JSONObject();
                 object.put("type", type.getText().toString());
                 object.put("description", description.getText().toString());
@@ -100,8 +99,8 @@ public class IncidentReport extends AppCompatActivity {
 
 
 
-                Call<RequestBody> call = incident.uploadFile(multiPartBody, object);
-
+                //Call<RequestBody> call = incident.uploadFile(multiPartBody, object);
+                Call<RequestBody> call = incident.uploadFile(multiPartBody);
                 call.enqueue(new Callback<RequestBody>() {
 
 
@@ -130,7 +129,10 @@ public class IncidentReport extends AppCompatActivity {
             Bitmap bp = (Bitmap) data.getExtras().get( "data");
             //image.setText(bp.getGenerationId() + "");
             image.setText(data.getDataString());
-            imagePath = data.getData().getPath();
+            //imagePath = data.getData().getPath();
+            imagePath = data.getDataString();
+            if (data != null)
+                Toast.makeText(this, data.getData().getPath(), Toast.LENGTH_SHORT).show();
         }
     }
 }
