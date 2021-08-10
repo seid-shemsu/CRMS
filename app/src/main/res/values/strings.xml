@@ -42,4 +42,18 @@
         <item>type four</item>
         <item>type five</item>
     </string-array>
+
+    <string-array name="color">
+        <item>black</item>
+        <item>light</item>
+        <item>pale white</item>
+        <item>light brown</item>
+        <item>olive</item>
+        <item>moderate brown</item>
+    </string-array>
+
+    <string-array name="sex">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
 </resources>

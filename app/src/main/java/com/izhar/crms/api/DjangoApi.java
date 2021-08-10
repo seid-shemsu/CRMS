@@ -16,14 +16,53 @@ import retrofit2.http.Part;
 
 
 public interface DjangoApi {
-    String boundary = "*****";
-    String DJANGO_SITE = "http://192.168.137.252:8000/";
+    String host_ip = "http://192.168.137.252:8000/";
+    //String host_ip = "http://10.240.72.62:8000/";
 
+    //report incident
     @Multipart
-    @POST("up/")
-    //@Headers({"Accept: application/json", "Content-Type: image/*"})
-    Call<RequestBody> uploadFile(
-            @Part MultipartBody.Part file);
-    //Call<String> uploadImage(@Part MultipartBody.Part file, @Part("filename") RequestBody name);
+    @POST("reportIncident/")
+    Call<RequestBody> reportIncident(
+            @Part("type") RequestBody type,
+            @Part("description") RequestBody description,
+            @Part("address") RequestBody address,
+            @Part("date") RequestBody date,
+            @Part MultipartBody.Part image);
+
+    //request certificate
+    @Multipart
+    @POST("requestCertificate/")
+    Call<RequestBody> requestCertificate(
+            @Part("name") RequestBody name,
+            @Part("phone") RequestBody phone,
+            @Part("address") RequestBody address,
+            @Part("kebele_id") RequestBody kebele_id,
+            @Part("date") RequestBody date,
+            //@Part MultipartBody.Part id_photo,
+            @Part MultipartBody.Part photo);
+
+    //report wanted criminal
+    @Multipart
+    @POST("reportCriminal/")
+    Call<RequestBody> reportCriminal(
+            @Part("criminal_id") RequestBody criminal_id,
+            @Part("address") RequestBody address);
+
+
+    //report missing person
+    @Multipart
+    @POST("reportMissing/")
+    Call<RequestBody> reportMissing(
+            @Part("name") RequestBody name,
+            @Part("sex") RequestBody sex,
+            @Part("age") RequestBody age,
+            @Part("color") RequestBody color,
+            @Part("height") RequestBody height,
+            @Part("description") RequestBody description,
+            @Part("address") RequestBody address,
+            @Part("date") RequestBody date,
+            @Part("lost_date") RequestBody lost_date,
+            @Part("status") RequestBody status,
+            @Part MultipartBody.Part image);
 
 }

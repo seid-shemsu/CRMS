@@ -32,7 +32,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -48,13 +50,11 @@ import retrofit2.http.Headers;
 
 public class IncidentReport extends AppCompatActivity {
 
-    AutoCompleteTextView kebele, type;
-    EditText place, description, image;
-    Button send;
-    static File file;
-    static Uri uri;
-    final int RC_TAKE_PHOTO = 1;
-    private static final String url = "http://10.240.72.142:8000/upload/";
+    private AutoCompleteTextView kebele, type;
+    private EditText place, description, photo;
+    private Button send;
+    private static File file;
+    private static Uri uri;
 
 
     @Override
@@ -65,7 +65,7 @@ public class IncidentReport extends AppCompatActivity {
         type = findViewById(R.id.type);
         place = findViewById(R.id.special_place);
         description = findViewById(R.id.description);
-        image = findViewById(R.id.image);
+        photo = findViewById(R.id.image);
 
 
         ArrayAdapter<CharSequence> types = ArrayAdapter.createFromResource(this, R.array.types, R.layout.list_item);
@@ -74,41 +74,41 @@ public class IncidentReport extends AppCompatActivity {
         ArrayAdapter<CharSequence> kebeles = ArrayAdapter.createFromResource(this, R.array.kebele, R.layout.list_item);
         kebele.setAdapter(kebeles);
 
-        image.setOnClickListener(v -> {
-            /*Intent intent = new Intent();
-            startActivityForResult(intent, 1010);*/
+        photo.setOnClickListener(v -> {
             takePhoto();
         });
 
         send = findViewById(R.id.send_report);
         send.setOnClickListener(v -> {
-            /*try {
-                String url = "http://10.240.72.142:8000/reportIncident/";
-                JSONObject object = new JSONObject();
-                object.put("type", type.getText().toString());
-                object.put("description", description.getText().toString());
-                object.put("address", kebele.getText().toString() + " " + place.getText().toString());
-
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                        url,
-                        object,
-                        response -> {
-                            Toast.makeText(this, "sending", Toast.LENGTH_SHORT).show();
-                        },
-                        error -> {
-                            Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                        });
-                RequestQueue queue = Volley.newRequestQueue(this);
-                queue.add(request);
-
-            }
-            catch (Exception e){
-                Toast.makeText(this, e.getMessage() + "\nerror 101", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }*/
-            //upload(getPath());
-            upload();
+            if (is_valid())
+                upload();
+            else
+                Toast.makeText(this, "please fill the form correctly", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private boolean is_valid() {
+        if (type.getText().toString().length() == 0){
+            type.setError("select type");
+            return false;
+        }
+        if (kebele.getText().toString().length() == 0){
+            kebele.setError("select kebele");
+            return false;
+        }
+        if (place.getText().toString().length() == 0){
+            place.setError("please mention the special place");
+            return false;
+        }
+        if (description.getText().toString().length() == 0){
+            description.setError("please describe the situation");
+            return false;
+        }
+        if (file == null){
+            Toast.makeText(this, "please take a picture", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     private void takePhoto() {
@@ -117,38 +117,7 @@ public class IncidentReport extends AppCompatActivity {
                 "phone_" + (System.currentTimeMillis()) + ".jpg");
         uri = Uri.fromFile(file);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        startActivityForResult(intent, RC_TAKE_PHOTO);
-
-    }
-
-    private String getPath() {
-        try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-            File wallpaperDirectory = new File(
-                    Environment.getExternalStorageDirectory() + IMAGE_DIRECTORY);
-            // have the object build the directory structure, if needed.
-            if (!wallpaperDirectory.exists()) {
-                wallpaperDirectory.mkdirs();
-            }
-
-            File f = new File(wallpaperDirectory, Calendar.getInstance()
-                    .getTimeInMillis() + ".jpg");
-            f.createNewFile();
-            FileOutputStream fo = new FileOutputStream(f);
-            fo.write(bytes.toByteArray());
-            MediaScannerConnection.scanFile(this,
-                    new String[]{f.getPath()},
-                    new String[]{"image/jpeg"}, null);
-            fo.close();
-            Log.d("TAG", "File Saved::--->" + f.getAbsolutePath());
-
-            return f.getAbsolutePath();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        return "";
+        startActivityForResult(intent, 1010);
     }
 
     @Override
@@ -156,65 +125,40 @@ public class IncidentReport extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1010 && resultCode != 0) {
-            image.setText(uri.toString());
+            photo.setText(uri.toString());
         }
     }
-
 
     private void upload() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(DjangoApi.DJANGO_SITE)
+                .baseUrl(DjangoApi.host_ip)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        /*DjangoApi postApi = retrofit.create(DjangoApi.class);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part multiPartBody = MultipartBody.Part
-                .createFormData("image", file.getPath().toLowerCase(), requestBody);
 
-        Call<RequestBody> call = postApi.uploadFile(multiPartBody);
-
-        call.enqueue(new Callback<RequestBody>() {
-            @Override
-            public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
-                Toast.makeText(IncidentReport.this, "good", Toast.LENGTH_SHORT).show();
-
-            }
-
-            @Override
-            public void onFailure(Call<RequestBody> call, Throwable t) {
-                Toast.makeText(IncidentReport.this, "fail\n" + call.toString(), Toast.LENGTH_SHORT).show();
-
-            }
-        });*/
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
-        JSONObject object = new JSONObject();
-        try {
-            object.put("type", type.getText().toString());
-            object.put("description", description.getText().toString());
-            object.put("address", kebele.getText().toString() + " " + place.getText().toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        RequestBody json = RequestBody.create(MediaType.parse("application/json"), object.toString());
-
-        MultipartBody.Part json_ = MultipartBody.Part.createFormData("json", "json", json);
         DjangoApi getResponse = retrofit.create(DjangoApi.class);
-        Call<RequestBody> call = getResponse.uploadFile(fileToUpload);
-        Log.d("assss", "asss");
+
+        SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        String now = spf.format(new Date());
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+
+        MultipartBody.Part image = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
+        RequestBody desc = RequestBody.create(okhttp3.MultipartBody.FORM, description.getText().toString());
+        RequestBody typ = RequestBody.create(okhttp3.MultipartBody.FORM, type.getText().toString());
+        RequestBody add = RequestBody.create(okhttp3.MultipartBody.FORM, kebele.getText().toString() + " " + place.getText().toString());
+        RequestBody date = RequestBody.create(okhttp3.MultipartBody.FORM, now);
+
+        Call<RequestBody> call = getResponse.reportIncident(typ, desc, add, date, image);
+        Log.d("status", "sending...");
         call.enqueue(new Callback<RequestBody>() {
             @Override
             public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
-                Log.d("mullllll", "good");
+                Log.d("status", "sent one");
             }
-
             @Override
             public void onFailure(Call call, Throwable t) {
-                Log.d("gttt", "bad");
+                Log.d("status", "sent One");
             }
         });
     }
-
-    private static final String IMAGE_DIRECTORY = "/demonuts_upload_gallery";
-
 }

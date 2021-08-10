@@ -122,6 +122,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginVertical="10dp"
+            android:paddingHorizontal="50dp"
+            android:background="@drawable/rounded_button"
             android:text="send report" />
     </LinearLayout>
 

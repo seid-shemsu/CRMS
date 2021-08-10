@@ -1,30 +1,206 @@
 package com.izhar.crms.ui.certificate;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.izhar.crms.R;
+import com.izhar.crms.api.DjangoApi;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.app.Activity.RESULT_OK;
 
 public class Certificate extends Fragment {
 
     View root;
     AutoCompleteTextView kebele;
+    EditText name, f_name, phone, kebele_id_edit_text, house_no, kebele_id_photo_edit_text, photo_edit_text;
+    Button send;
+
+    private static File kebele_id_photo_file, photo_file;
+
+    private static Uri photo_uri, kebele_id_photo_uri;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_certificate, container, false);
+        name = root.findViewById(R.id.name);
+        f_name = root.findViewById(R.id.f_name);
+        phone = root.findViewById(R.id.phone);
+        kebele_id_edit_text = root.findViewById(R.id.kebele_id_number);
+        kebele_id_photo_edit_text = root.findViewById(R.id.kebele_id_photo);
+        photo_edit_text = root.findViewById(R.id.photo);
+        house_no = root.findViewById(R.id.house_no);
+        send = root.findViewById(R.id.send_request);
         kebele = root.findViewById(R.id.kebele);
 
-        ArrayAdapter<CharSequence> ti = ArrayAdapter.createFromResource(getContext(), R.array.kebele, R.layout.list_item);
-        kebele.setAdapter(ti);
+        ArrayAdapter<CharSequence> kebele_adapter = ArrayAdapter.createFromResource(getContext(), R.array.kebele, R.layout.list_item);
+        kebele.setAdapter(kebele_adapter);
+
+        kebele_id_photo_edit_text.setOnClickListener(v -> {
+            takePhoto2();
+        });
+
+        photo_edit_text.setOnClickListener(v -> {
+            takePhoto();
+        });
+        
+        send.setOnClickListener(v -> {
+            if (is_valid()){
+                sendRequest();
+            }
+            else {
+                Toast.makeText(getContext(), "please fill the form correctly", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return root;
+    }
+
+
+    private boolean is_valid() {
+        if (name.getText().toString().length() == 0){
+            name.setError("please insert a name");
+            return false;
+        }
+        if (f_name.getText().toString().length() == 0){
+            f_name.setError("please insert a name");
+            return false;
+        }
+        if (phone.getText().toString().length() == 0){
+            phone.setError("please enter a phone number");
+            return false;
+        }
+        if (kebele.getText().toString().length() == 0){
+            kebele.setError("please select your kebele");
+            return false;
+        }
+        if (house_no.getText().toString().length() == 0){
+            house_no.setError("please enter your house number");
+            return false;
+        }
+        /*if (kebele_id_edit_text.getText().toString().length() == 0){
+            kebele_id_edit_text.setError("please enter you kebele id number");
+            return false;
+        }*/
+        if (kebele_id_photo_file == null){
+            Toast.makeText(getContext(), "please insert a picture of your kebele id", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (photo_file == null){
+            Toast.makeText(getContext(), "please insert a picture of you", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private void takePhoto() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        photo_file = new File(getContext().getExternalCacheDir(), "photo_" + (System.currentTimeMillis()) + ".jpg");
+        photo_uri = Uri.fromFile(photo_file);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photo_uri);
+        startActivityForResult(intent, 1010);
+    }
+
+    private void takePhoto2() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        kebele_id_photo_file = new File(getContext().getExternalCacheDir(), "photo_" + (System.currentTimeMillis()) + ".jpg");
+        kebele_id_photo_uri = Uri.fromFile(kebele_id_photo_file);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photo_uri);
+        startActivityForResult(intent, 1012);
+    }
+
+    private void openFileChooser(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1011);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Auto-generated method stub
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1010 && resultCode != 0) {
+            photo_edit_text.setText(photo_uri.toString());
+        }
+        if (requestCode == 1012 && resultCode != 0) {
+            kebele_id_photo_edit_text.setText(kebele_id_photo_uri.toString());
+        }
+
+        if (requestCode == 1011 && resultCode == RESULT_OK && data != null && data.getData() != null){
+            kebele_id_photo_uri = data.getData();
+            kebele_id_photo_file = new File(kebele_id_photo_uri.getPath());
+            kebele_id_photo_edit_text.setText(kebele_id_photo_uri.toString());
+        }
+
+    }
+
+    private void sendRequest() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(DjangoApi.host_ip)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        DjangoApi getResponse = retrofit.create(DjangoApi.class);
+
+        SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        String now = spf.format(new Date());
+
+        RequestBody your_photo = RequestBody.create(MediaType.parse("image/*"), photo_file);
+        //RequestBody kebele_id_photo = RequestBody.create(MediaType.parse("image/*"), kebele_id_photo_file);
+
+        MultipartBody.Part photo_ = MultipartBody.Part.createFormData("photo", photo_file.getName(), your_photo);
+        //MultipartBody.Part kebele_photo_ = MultipartBody.Part.createFormData("id_photo", kebele_id_photo_file.getName(), kebele_id_photo);
+        RequestBody name_ = RequestBody.create(okhttp3.MultipartBody.FORM, name.getText().toString() + " " + f_name.getText().toString());
+        RequestBody phone_ = RequestBody.create(okhttp3.MultipartBody.FORM, phone.getText().toString());
+        RequestBody address_ = RequestBody.create(okhttp3.MultipartBody.FORM, kebele.getText().toString() + "/" + house_no.getText().toString());
+        RequestBody kebele_id_ = RequestBody.create(okhttp3.MultipartBody.FORM, kebele_id_edit_text.getText().toString());
+        RequestBody date = RequestBody.create(okhttp3.MultipartBody.FORM, now);
+
+        Call<RequestBody> call = getResponse.requestCertificate(name_, phone_, address_, kebele_id_, date, photo_);
+        //Call<RequestBody> call = getResponse.requestCertificate(name_, phone_, address_, kebele_id_, date, photo_);
+        //Call<RequestBody> call = getResponse.requestCertificate(photo_);
+
+        Log.d("status", "sending...");
+        call.enqueue(new Callback<RequestBody>() {
+            @Override
+            public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
+                Log.d("status", "sent one request");
+                Log.d("photo file", photo_file.getAbsolutePath());
+            }
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.d("status", "sent One Request");
+                //Log.d("kebele file", kebele_id_photo_file.getAbsolutePath().toLowerCase());
+            }
+        });
     }
 }
