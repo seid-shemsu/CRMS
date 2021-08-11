@@ -1,6 +1,7 @@
 package com.izhar.crms.ui.certificate;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -65,7 +66,7 @@ public class Certificate extends Fragment {
         kebele.setAdapter(kebele_adapter);
 
         kebele_id_photo_edit_text.setOnClickListener(v -> {
-            takePhoto2();
+            openFileChooser();
         });
 
         photo_edit_text.setOnClickListener(v -> {
@@ -106,10 +107,10 @@ public class Certificate extends Fragment {
             house_no.setError("please enter your house number");
             return false;
         }
-        /*if (kebele_id_edit_text.getText().toString().length() == 0){
+        if (kebele_id_edit_text.getText().toString().length() == 0){
             kebele_id_edit_text.setError("please enter you kebele id number");
             return false;
-        }*/
+        }
         if (kebele_id_photo_file == null){
             Toast.makeText(getContext(), "please insert a picture of your kebele id", Toast.LENGTH_SHORT).show();
             return false;
@@ -131,17 +132,17 @@ public class Certificate extends Fragment {
 
     private void takePhoto2() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        kebele_id_photo_file = new File(getContext().getExternalCacheDir(), "photo_" + (System.currentTimeMillis()) + ".jpg");
+        kebele_id_photo_file = new File(getContext().getExternalCacheDir(), "kebele_photo_" + (System.currentTimeMillis()) + ".jpg");
         kebele_id_photo_uri = Uri.fromFile(kebele_id_photo_file);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, photo_uri);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, kebele_id_photo_uri);
         startActivityForResult(intent, 1012);
     }
 
     private void openFileChooser(){
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 1011);
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(Intent.createChooser(intent, "select image"),
+                1001);
     }
 
     @Override
@@ -149,18 +150,35 @@ public class Certificate extends Fragment {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1010 && resultCode != 0) {
-            photo_edit_text.setText(photo_uri.toString());
+            photo_edit_text.setText("uploaded");
         }
         if (requestCode == 1012 && resultCode != 0) {
-            kebele_id_photo_edit_text.setText(kebele_id_photo_uri.toString());
+            kebele_id_photo_edit_text.setText("uploaded");
         }
 
-        if (requestCode == 1011 && resultCode == RESULT_OK && data != null && data.getData() != null){
+        if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null){
             kebele_id_photo_uri = data.getData();
-            kebele_id_photo_file = new File(kebele_id_photo_uri.getPath());
-            kebele_id_photo_edit_text.setText(kebele_id_photo_uri.toString());
+            kebele_id_photo_file = new File(this.getRealPathFromURIForGallery(kebele_id_photo_uri));
+            kebele_id_photo_edit_text.setText("uploaded");
         }
 
+    }
+    public String getRealPathFromURIForGallery(Uri uri) {
+        if (uri == null) {
+            return null;
+        }
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContext().getContentResolver().query(uri, projection, null,
+                null, null);
+        if (cursor != null) {
+            int column_index =
+                    cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        assert false;
+        cursor.close();
+        return uri.getPath();
     }
 
     private void sendRequest() {
@@ -175,17 +193,17 @@ public class Certificate extends Fragment {
         String now = spf.format(new Date());
 
         RequestBody your_photo = RequestBody.create(MediaType.parse("image/*"), photo_file);
-        //RequestBody kebele_id_photo = RequestBody.create(MediaType.parse("image/*"), kebele_id_photo_file);
+        RequestBody kebele_id_photo = RequestBody.create(MediaType.parse("image/*"), kebele_id_photo_file);
 
         MultipartBody.Part photo_ = MultipartBody.Part.createFormData("photo", photo_file.getName(), your_photo);
-        //MultipartBody.Part kebele_photo_ = MultipartBody.Part.createFormData("id_photo", kebele_id_photo_file.getName(), kebele_id_photo);
+        MultipartBody.Part kebele_photo_ = MultipartBody.Part.createFormData("id_photo", kebele_id_photo_file.getName(), kebele_id_photo);
         RequestBody name_ = RequestBody.create(okhttp3.MultipartBody.FORM, name.getText().toString() + " " + f_name.getText().toString());
         RequestBody phone_ = RequestBody.create(okhttp3.MultipartBody.FORM, phone.getText().toString());
         RequestBody address_ = RequestBody.create(okhttp3.MultipartBody.FORM, kebele.getText().toString() + "/" + house_no.getText().toString());
         RequestBody kebele_id_ = RequestBody.create(okhttp3.MultipartBody.FORM, kebele_id_edit_text.getText().toString());
         RequestBody date = RequestBody.create(okhttp3.MultipartBody.FORM, now);
 
-        Call<RequestBody> call = getResponse.requestCertificate(name_, phone_, address_, kebele_id_, date, photo_);
+        Call<RequestBody> call = getResponse.requestCertificate(name_, phone_, address_, kebele_id_, date, kebele_photo_, photo_);
         //Call<RequestBody> call = getResponse.requestCertificate(name_, phone_, address_, kebele_id_, date, photo_);
         //Call<RequestBody> call = getResponse.requestCertificate(photo_);
 
@@ -193,13 +211,11 @@ public class Certificate extends Fragment {
         call.enqueue(new Callback<RequestBody>() {
             @Override
             public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
-                Log.d("status", "sent one request");
-                Log.d("photo file", photo_file.getAbsolutePath());
+                Log.d("status", "success");
             }
             @Override
             public void onFailure(Call call, Throwable t) {
-                Log.d("status", "sent One Request");
-                //Log.d("kebele file", kebele_id_photo_file.getAbsolutePath().toLowerCase());
+                Log.d("status", "failed");
             }
         });
     }

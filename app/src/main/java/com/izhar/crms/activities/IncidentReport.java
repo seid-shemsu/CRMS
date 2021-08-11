@@ -2,8 +2,11 @@ package com.izhar.crms.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,12 +14,14 @@ import android.os.Environment;
 import android.os.FileUtils;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -55,8 +60,7 @@ public class IncidentReport extends AppCompatActivity {
     private Button send;
     private static File file;
     private static Uri uri;
-
-
+    Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +70,7 @@ public class IncidentReport extends AppCompatActivity {
         place = findViewById(R.id.special_place);
         description = findViewById(R.id.description);
         photo = findViewById(R.id.image);
-
-
+        initDialog();
         ArrayAdapter<CharSequence> types = ArrayAdapter.createFromResource(this, R.array.types, R.layout.list_item);
         type.setAdapter(types);
 
@@ -85,6 +88,14 @@ public class IncidentReport extends AppCompatActivity {
             else
                 Toast.makeText(this, "please fill the form correctly", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private void initDialog() {
+        dialog = new Dialog(this);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.loading);
     }
 
     private boolean is_valid() {
@@ -130,6 +141,7 @@ public class IncidentReport extends AppCompatActivity {
     }
 
     private void upload() {
+        dialog.show();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(DjangoApi.host_ip)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -154,11 +166,15 @@ public class IncidentReport extends AppCompatActivity {
             @Override
             public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
                 Log.d("status", "sent one");
+                dialog.dismiss();
+                onBackPressed();
             }
             @Override
             public void onFailure(Call call, Throwable t) {
                 Log.d("status", "sent One");
+                dialog.dismiss();
             }
         });
     }
+
 }

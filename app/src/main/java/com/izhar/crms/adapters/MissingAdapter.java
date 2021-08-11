@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.izhar.crms.R;
+import com.izhar.crms.api.DjangoApi;
 import com.izhar.crms.objects.MissingPerson;
 import com.izhar.crms.ui.missing.Missing;
 import com.squareup.picasso.Picasso;
@@ -41,7 +42,7 @@ public class MissingAdapter extends RecyclerView.Adapter<MissingAdapter.Holder> 
         holder.age.setText(Integer.toString(person.getAge()));
         holder.height.setText(Double.toString(person.getHeight()));
         holder.sex.setText(person.getSex());
-        Picasso.with(context).load(person.getImage()).placeholder(R.drawable.missing_person).into(holder.image);
+        Picasso.with(context).load(DjangoApi.host_ip.substring(0, DjangoApi.host_ip.length() - 1)  +  person.getImage()).placeholder(R.drawable.missing_person).into(holder.image);
     }
 
     @Override

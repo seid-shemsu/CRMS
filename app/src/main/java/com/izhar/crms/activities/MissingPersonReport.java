@@ -3,12 +3,16 @@ package com.izhar.crms.activities;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -37,10 +41,14 @@ public class MissingPersonReport extends AppCompatActivity {
     Button send;
     private static File file;
     private static Uri uri;
+
+    private Dialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_missing_person_report);
+        initDialog();
         init();
         setAdapters();
         photo.setOnClickListener(v -> {
@@ -54,6 +62,13 @@ public class MissingPersonReport extends AppCompatActivity {
         });
     }
 
+    private void initDialog() {
+        dialog = new Dialog(this);
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.loading);
+    }
     private void init(){
         name = findViewById(R.id.name);
         age = findViewById(R.id.age);
@@ -84,10 +99,6 @@ public class MissingPersonReport extends AppCompatActivity {
     }
 
     private void openFileChooser(){
-        /*Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 1001);*/
         Intent intent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(Intent.createChooser(intent, "select image"),
@@ -98,9 +109,6 @@ public class MissingPersonReport extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            /*uri = data.getData();
-            file = new File(uri.getPath());
-            photo.setText(file.getAbsolutePath());*/
             uri = data.getData();
             file = new File(this.getRealPathFromURIForGallery(uri));
             photo.setText(file.getAbsolutePath());
@@ -177,6 +185,7 @@ public class MissingPersonReport extends AppCompatActivity {
     }
 
     private void report() {
+        dialog.show();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(DjangoApi.host_ip)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -207,10 +216,13 @@ public class MissingPersonReport extends AppCompatActivity {
             @Override
             public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
                 Log.d("status", "sent one");
+                dialog.dismiss();
+                onBackPressed();
             }
             @Override
             public void onFailure(Call call, Throwable t) {
                 Log.d("status", "sent One");
+                dialog.dismiss();
             }
         });
     }

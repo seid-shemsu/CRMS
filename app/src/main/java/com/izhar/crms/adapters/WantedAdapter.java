@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +25,24 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.izhar.crms.R;
+import com.izhar.crms.api.DjangoApi;
 import com.izhar.crms.objects.WantedPerson;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
     private Context context;
@@ -53,7 +66,7 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
         holder.age.setText(Integer.toString(person.getAge()));
         holder.height.setText(person.getHeight().toString());
         holder.sex.setText(person.getSex());
-        Picasso.with(context).load("http://192.168.137.252:8000" + person.getImage()).placeholder(R.drawable.wanted_person).into(holder.image);
+        Picasso.with(context).load(DjangoApi.host_ip.substring(0, DjangoApi.host_ip.length() - 1)  + person.getImage()).placeholder(R.drawable.wanted_person).into(holder.image);
     }
 
     @Override
@@ -110,7 +123,7 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
         height.setText(_person.getHeight() + "");
         description.setText(_person.getDescription());
         status.setText(_person.getStatus());
-        Picasso.with(context).load("http://192.168.137.252:8000" + _person.getImage()).placeholder(R.drawable.wanted_person).into(image);
+        Picasso.with(context).load(DjangoApi.host_ip.substring(0, DjangoApi.host_ip.length() - 1)  + _person.getImage()).placeholder(R.drawable.wanted_person).into(image);
         report.setOnClickListener(v1 -> {
             reportCriminal(_person.getId());
             dialog.dismiss();
@@ -124,26 +137,29 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
             report_btn.setOnClickListener(v -> {
                 if (kebele.getText().toString().length() > 0 && special_place.getText().toString().length() > 0){
                     Toast.makeText(context, "Reporting on progress", Toast.LENGTH_SHORT).show();
-                    try {
-                        String url = "http://192.168.137.252:8000/reportCriminal/";
-                        JSONObject object = new JSONObject();
-                        object.put("criminal", _person.toString());
-                        object.put("address", kebele.getText().toString() + " kebele  : " + special_place.getText().toString());
-                        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                                url,
-                                object,
-                                response -> {
-                                    Toast.makeText(context, "sending", Toast.LENGTH_SHORT).show();
-                                },
-                                error -> {
-                                    Toast.makeText(context, error.getMessage() + "\nerror", Toast.LENGTH_SHORT).show();
-                                });
-                        RequestQueue queue = Volley.newRequestQueue(context);
-                        queue.add(request);
-                    }
-                    catch (Exception e){
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(DjangoApi.host_ip)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    DjangoApi getResponse = retrofit.create(DjangoApi.class);
+
+                    RequestBody criminal_id = RequestBody.create(okhttp3.MultipartBody.FORM, wantedPeople.get(position).getId());
+                    RequestBody address_ = RequestBody.create(okhttp3.MultipartBody.FORM, kebele.getText().toString() + "/" + special_place.getText().toString());
+
+                    Call<RequestBody> call = getResponse.reportCriminal(criminal_id, address_);
+
+                    Log.d("status", "sending...");
+                    call.enqueue(new Callback<RequestBody>() {
+                        @Override
+                        public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
+                            Log.d("status", "success");
+                        }
+                        @Override
+                        public void onFailure(Call call, Throwable t) {
+                            Log.d("status", "failed");
+                        }
+                    });
                     dialog.dismiss();
                 }
                 else {

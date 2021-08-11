@@ -16,8 +16,8 @@ import retrofit2.http.Part;
 
 
 public interface DjangoApi {
-    String host_ip = "http://192.168.137.252:8000/";
-    //String host_ip = "http://10.240.72.62:8000/";
+    //String host_ip = "http://192.168.137.252:8000/";
+    String host_ip = "http://10.240.72.81:8000/";
 
     //report incident
     @Multipart
@@ -38,14 +38,14 @@ public interface DjangoApi {
             @Part("address") RequestBody address,
             @Part("kebele_id") RequestBody kebele_id,
             @Part("date") RequestBody date,
-            //@Part MultipartBody.Part id_photo,
+            @Part MultipartBody.Part id_photo,
             @Part MultipartBody.Part photo);
 
     //report wanted criminal
     @Multipart
     @POST("reportCriminal/")
     Call<RequestBody> reportCriminal(
-            @Part("criminal_id") RequestBody criminal_id,
+            @Part("criminal_id") RequestBody id,
             @Part("address") RequestBody address);
 
 
@@ -64,5 +64,4 @@ public interface DjangoApi {
             @Part("lost_date") RequestBody lost_date,
             @Part("status") RequestBody status,
             @Part MultipartBody.Part image);
-
 }

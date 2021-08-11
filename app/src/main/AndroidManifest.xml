@@ -3,7 +3,7 @@
     package="com.izhar.crms">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CRMS"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.IncidentReport"/>
+        <activity android:name=".intro.Intro"></activity>
+        <activity android:name=".activities.IncidentReport" />
         <activity android:name=".activities.MissingPersonReport" />
         <activity
             android:name=".MainActivity"

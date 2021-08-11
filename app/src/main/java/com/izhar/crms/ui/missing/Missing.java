@@ -1,7 +1,10 @@
 package com.izhar.crms.ui.missing;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.izhar.crms.R;
 import com.izhar.crms.activities.MissingPersonReport;
 import com.izhar.crms.adapters.MissingAdapter;
+import com.izhar.crms.api.DjangoApi;
 import com.izhar.crms.objects.MissingPerson;
 
 import org.json.JSONArray;
@@ -44,65 +49,54 @@ public class Missing extends Fragment {
     private MissingAdapter adapter;
     private List<MissingPerson> missingPeople;
     private TextView no;
-    private ProgressBar progressBar;
-
+    private Dialog dialog;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_missing, container, false);
         setHasOptionsMenu(true);
+        initDialog();
+        dialog.show();
         recyclerView = root.findViewById(R.id.recycler);
-        progressBar = root.findViewById(R.id.progressbar);
         no = root.findViewById(R.id.no);
         missingPeople = new ArrayList<>();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
 
-        progressBar.setVisibility(View.VISIBLE);
-        String url = "";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onResponse(String response) {
-                progressBar.setVisibility(View.INVISIBLE);
-                try {
+        String url = DjangoApi.host_ip + "missed_persons/";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
+            try {
 
-                    JSONArray jsonArray = new JSONArray(response);
-                    for (int i = 0 ; i < jsonArray.length(); i++){
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String id, name, address, sex, date, color, description, status;
-                        String image;
-                        int age;
-                        double height;
-                        id = jsonObject.getString("id");
-                        name =  (jsonObject. getString("name"));
-                        age =  (jsonObject. getInt("age"));
-                        address =  (jsonObject. getString("address"));
-                        sex =  (jsonObject. getString("sex"));
-                        date =  (jsonObject. getString("date"));
-                        color =  (jsonObject. getString("color"));
-                        height =  (jsonObject. getDouble("height"));
-                        description =  (jsonObject. getString("description"));
-                        status =  (jsonObject. getString("status"));
-                        image =  (jsonObject. getString("image"));
-                        MissingPerson person = new MissingPerson(
-                                id, name, age, address, sex, date, color, height, description, status, image);
-                        missingPeople.add(person);
-
-                    }
-                    adapter = new MissingAdapter(getContext(), missingPeople);
-                    recyclerView.setAdapter(adapter);
+                JSONArray jsonArray = new JSONArray(response);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String id, name, address, sex, date, color, description, status;
+                    String image;
+                    int age;
+                    double height;
+                    id = jsonObject.getString("id");
+                    name = (jsonObject.getString("name"));
+                    age = (jsonObject.getInt("age"));
+                    address = (jsonObject.getString("address"));
+                    sex = (jsonObject.getString("sex"));
+                    date = (jsonObject.getString("date"));
+                    color = (jsonObject.getString("color"));
+                    height = (jsonObject.getDouble("height"));
+                    description = (jsonObject.getString("description"));
+                    status = (jsonObject.getString("status"));
+                    image = (jsonObject.getString("image"));
+                    MissingPerson person = new MissingPerson(
+                            id, name, age, address, sex, date, color, height, description, status, image);
+                    missingPeople.add(person);
                 }
-                catch (Exception e) {
-                    Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
-                }
+                adapter = new MissingAdapter(getContext(), missingPeople);
+                recyclerView.setAdapter(adapter);
+            } catch (Exception e) {
+                Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.INVISIBLE);
-            }
+        }, error -> {
+            Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
@@ -122,5 +116,14 @@ public class Missing extends Fragment {
             startActivity(new Intent(getContext(), MissingPersonReport.class));
         }
         return true;
+    }
+
+
+    private void initDialog() {
+        dialog = new Dialog(getContext());
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.loading);
     }
 }

@@ -1,10 +1,14 @@
 package com.izhar.crms.ui.home;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -26,6 +31,7 @@ import com.android.volley.toolbox.Volley;
 import com.izhar.crms.R;
 import com.izhar.crms.adapters.NotificationAdapter;
 import com.izhar.crms.adapters.WantedAdapter;
+import com.izhar.crms.api.DjangoApi;
 import com.izhar.crms.objects.Notification;
 import com.izhar.crms.objects.WantedPerson;
 
@@ -36,27 +42,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
-    List<Notification> notifications;
-    NotificationAdapter adapter;
-    RecyclerView recycler;
-    ProgressBar progressBar;
-    View root;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    private List<Notification> notifications;
+    private NotificationAdapter adapter;
+    private RecyclerView recycler;
+    private ProgressBar progressBar;
+    private View root;
+    private Dialog dialog;
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_notifications, container, false);
+        initDialog();
+        dialog.show();
         notifications = new ArrayList<>();
         recycler = root.findViewById(R.id.recycler);
         recycler.setHasFixedSize(true);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        progressBar = root.findViewById(R.id.progressBar);
-        String url = "http://192.168.137.252:8000/notifications/";
+        String url = DjangoApi.host_ip + "notifications/";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(String response) {
-                progressBar.setVisibility(View.INVISIBLE);
                 try {
                     JSONArray jsonArray = new JSONArray(response);
                     for (int i = 0 ; i < jsonArray.length(); i++){
@@ -72,7 +77,7 @@ public class HomeFragment extends Fragment {
                     }
                     adapter = new NotificationAdapter(getContext(), notifications);
                     recycler.setAdapter(adapter);
-                    progressBar.setVisibility(View.GONE);
+                    dialog.dismiss();
                 } catch (Exception e) {
                     Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
                 }
@@ -81,10 +86,18 @@ public class HomeFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), error.getMessage() + " ", Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
+                dialog.dismiss();
             }
         });
         requestQueue.add(stringRequest);
         return root;
+    }
+
+    private void initDialog() {
+        dialog = new Dialog(getContext());
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.loading);
     }
 }
