@@ -48,6 +48,7 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
     private Context context;
     private List<WantedPerson> wantedPeople;
 
+    private Dialog load_dialog;
     public WantedAdapter(Context context, List<WantedPerson> wantedPeople) {
         this.context = context;
         this.wantedPeople = wantedPeople;
@@ -125,7 +126,6 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
         status.setText(_person.getStatus());
         Picasso.with(context).load(DjangoApi.host_ip.substring(0, DjangoApi.host_ip.length() - 1)  + _person.getImage()).placeholder(R.drawable.wanted_person).into(image);
         report.setOnClickListener(v1 -> {
-            reportCriminal(_person.getId());
             dialog.dismiss();
             dialog.setContentView(R.layout.report_criminal);
             dialog.show();
@@ -136,31 +136,11 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
             Button report_btn = dialog.findViewById(R.id.report);
             report_btn.setOnClickListener(v -> {
                 if (kebele.getText().toString().length() > 0 && special_place.getText().toString().length() > 0){
-                    Toast.makeText(context, "Reporting on progress", Toast.LENGTH_SHORT).show();
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl(DjangoApi.host_ip)
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-
-                    DjangoApi getResponse = retrofit.create(DjangoApi.class);
-
-                    RequestBody criminal_id = RequestBody.create(okhttp3.MultipartBody.FORM, wantedPeople.get(position).getId());
-                    RequestBody address_ = RequestBody.create(okhttp3.MultipartBody.FORM, kebele.getText().toString() + "/" + special_place.getText().toString());
-
-                    Call<RequestBody> call = getResponse.reportCriminal(criminal_id, address_);
-
-                    Log.d("status", "sending...");
-                    call.enqueue(new Callback<RequestBody>() {
-                        @Override
-                        public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
-                            Log.d("status", "success");
-                        }
-                        @Override
-                        public void onFailure(Call call, Throwable t) {
-                            Log.d("status", "failed");
-                        }
-                    });
                     dialog.dismiss();
+                    initDialog();
+                    load_dialog.show();
+                    Toast.makeText(context, "Reporting on progress", Toast.LENGTH_SHORT).show();
+                    reportCriminal(position, kebele.getText().toString(), special_place.getText().toString());
                 }
                 else {
                     Toast.makeText(context, "please fill the required fields", Toast.LENGTH_SHORT).show();
@@ -171,8 +151,37 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
 
     }
 
-    private void reportCriminal(String id) {
+    private void reportCriminal(int position, String kebele, String special) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(DjangoApi.host_ip)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        DjangoApi getResponse = retrofit.create(DjangoApi.class);
 
+        RequestBody criminal_id = RequestBody.create(okhttp3.MultipartBody.FORM, wantedPeople.get(position).getId());
+        RequestBody address_ = RequestBody.create(okhttp3.MultipartBody.FORM, kebele+ "/" + special);
+
+        Call<RequestBody> call = getResponse.reportCriminal(criminal_id, address_);
+
+        Log.d("status", "sending...");
+        call.enqueue(new Callback<RequestBody>() {
+            @Override
+            public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
+                Log.d("status", "success");
+            }
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.d("status", "failed");
+            }
+        });
+    }
+
+    private void initDialog() {
+        load_dialog = new Dialog(context);
+        load_dialog.setCancelable(false);
+        load_dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        load_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        load_dialog.setContentView(R.layout.loading);
     }
 }
