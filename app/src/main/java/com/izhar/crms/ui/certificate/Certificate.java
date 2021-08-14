@@ -1,6 +1,8 @@
 package com.izhar.crms.ui.certificate;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import com.izhar.crms.api.DjangoApi;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -36,6 +39,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 public class Certificate extends Fragment {
 
@@ -51,6 +55,7 @@ public class Certificate extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        setLanguage();
         root = inflater.inflate(R.layout.fragment_certificate, container, false);
         name = root.findViewById(R.id.name);
         f_name = root.findViewById(R.id.f_name);
@@ -218,5 +223,13 @@ public class Certificate extends Fragment {
                 Log.d("status", "failed");
             }
         });
+    }
+    private void setLanguage() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("language", MODE_PRIVATE);
+        Locale locale = new Locale(sharedPreferences.getString("language", "om"));
+        Configuration configuration = new Configuration();
+        Locale.setDefault(locale);
+        configuration.locale = locale;
+        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
     }
 }

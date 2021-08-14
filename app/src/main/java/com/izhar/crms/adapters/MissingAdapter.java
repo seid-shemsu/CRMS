@@ -1,14 +1,27 @@
 package com.izhar.crms.adapters;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.izhar.crms.R;
@@ -66,8 +79,58 @@ public class MissingAdapter extends RecyclerView.Adapter<MissingAdapter.Holder> 
             detail = itemView.findViewById(R.id.view_detail);
 
             detail.setOnClickListener(v -> {
-
+                showDetail(getAdapterPosition());
             });
         }
     }
+
+    private void showDetail(int position) {
+        Dialog dialog = new Dialog(context);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.missing_person_detail);
+        TextView age, height, name, address, sex, date, color, description, status, reporter_name;
+        ImageView image;
+        Button call;
+        age = dialog.findViewById(R.id.age);
+        height = dialog.findViewById(R.id.height);
+        name = dialog.findViewById(R.id.name);
+        address = dialog.findViewById(R.id.address);
+        sex = dialog.findViewById(R.id.sex);
+        date = dialog.findViewById(R.id.date);
+        color = dialog.findViewById(R.id.color);
+        description = dialog.findViewById(R.id.description);
+        status = dialog.findViewById(R.id.status);
+        reporter_name = dialog.findViewById(R.id.parent_name);
+        image = dialog.findViewById(R.id.image);
+        call = dialog.findViewById(R.id.call);
+        age.setText(missingPeople.get(position).getAge() + "");
+        height.setText(missingPeople.get(position).getHeight() + "");
+        name.setText(missingPeople.get(position).getName());
+        address.setText(missingPeople.get(position).getAddress());
+        sex.setText(missingPeople.get(position).getSex());
+        date.setText(missingPeople.get(position).getDate());
+        color.setText(missingPeople.get(position).getColor());
+        description.setText(missingPeople.get(position).getDescription());
+        status.setText(missingPeople.get(position).getStatus());
+        reporter_name.setText(missingPeople.get(position).getReporter_name());
+        Picasso.with(context).load(DjangoApi.host_ip.substring(0, DjangoApi.host_ip.length() - 1)  +  missingPeople.get(position).getImage()).placeholder(R.drawable.missing_person).into(image);
+        call.setOnClickListener(v -> {
+            makeCall(missingPeople.get(position).getReporter_phone());
+        });
+        dialog.show();
+    }
+
+    private void makeCall(String reporter_phone) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED){
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:" + reporter_phone));
+            context.startActivity(callIntent);
+        }
+        else {
+            ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.CALL_PHONE}, 1001);
+        }
+    }
+
 }

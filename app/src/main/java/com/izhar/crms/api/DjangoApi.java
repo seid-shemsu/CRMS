@@ -63,5 +63,7 @@ public interface DjangoApi {
             @Part("date") RequestBody date,
             @Part("lost_date") RequestBody lost_date,
             @Part("status") RequestBody status,
+            @Part("reporter_name") RequestBody reporter_name,
+            @Part("reporter_phone") RequestBody reporter_phone,
             @Part MultipartBody.Part image);
 }

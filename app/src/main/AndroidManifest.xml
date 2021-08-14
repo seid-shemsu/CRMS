@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -14,18 +15,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CRMS"
         android:usesCleartextTraffic="true">
-        <activity android:name=".intro.Intro"></activity>
-        <activity android:name=".activities.IncidentReport" />
-        <activity android:name=".activities.MissingPersonReport" />
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name">
+        <activity android:name=".intro.Welcome"></activity>
+        <activity android:name=".intro.Intro">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.IncidentReport" />
+        <activity android:name=".activities.MissingPersonReport" />
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" />
     </application>
 
 </manifest>

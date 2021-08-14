@@ -51,4 +51,5 @@ dependencies {
 
     //implementation 'com.github.Shashank02051997:FancyWalkthrough-Android:2.2'
     implementation 'com.airbnb.android:lottie:3.6.0'
+    implementation 'com.codemybrainsout.onboarding:onboarder:1.0.4'
 }

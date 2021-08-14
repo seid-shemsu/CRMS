@@ -3,6 +3,8 @@ package com.izhar.crms.ui.missing;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -41,6 +43,9 @@ import org.json.JSONObject;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class Missing extends Fragment {
 
@@ -52,6 +57,7 @@ public class Missing extends Fragment {
     private Dialog dialog;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setLanguage();
         root = inflater.inflate(R.layout.fragment_missing, container, false);
         setHasOptionsMenu(true);
         initDialog();
@@ -66,11 +72,10 @@ public class Missing extends Fragment {
         String url = DjangoApi.host_ip + "missed_persons/";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
             try {
-
                 JSONArray jsonArray = new JSONArray(response);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String id, name, address, sex, date, color, description, status;
+                    String id, name, address, sex, date, color, description, status, parent_name, parent_phone;
                     String image;
                     int age;
                     double height;
@@ -84,15 +89,20 @@ public class Missing extends Fragment {
                     height = (jsonObject.getDouble("height"));
                     description = (jsonObject.getString("description"));
                     status = (jsonObject.getString("status"));
+                    parent_name = (jsonObject.getString("reporter_name"));
+                    parent_phone = (jsonObject.getString("reporter_phone"));
+
                     image = (jsonObject.getString("image"));
                     MissingPerson person = new MissingPerson(
-                            id, name, age, address, sex, date, color, height, description, status, image);
+                            id, name, age, address, sex, date, color, height, description, status, image, parent_name, parent_phone);
                     missingPeople.add(person);
                 }
                 adapter = new MissingAdapter(getContext(), missingPeople);
                 recyclerView.setAdapter(adapter);
+                dialog.dismiss();
             } catch (Exception e) {
                 Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
+                dialog.dismiss();
             }
         }, error -> {
             Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -125,5 +135,14 @@ public class Missing extends Fragment {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.loading);
+    }
+
+    private void setLanguage() {
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("language", MODE_PRIVATE);
+        Locale locale = new Locale(sharedPreferences.getString("language", "om"));
+        Configuration configuration = new Configuration();
+        Locale.setDefault(locale);
+        configuration.locale = locale;
+        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
     }
 }

@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -25,6 +27,7 @@ import com.izhar.crms.api.DjangoApi;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -47,6 +50,7 @@ public class MissingPersonReport extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setLanguage();
         setContentView(R.layout.activity_missing_person_report);
         initDialog();
         init();
@@ -208,9 +212,11 @@ public class MissingPersonReport extends AppCompatActivity {
         RequestBody address_ = RequestBody.create(okhttp3.MultipartBody.FORM, kebele.getText().toString() + "-->" + house_no.getText().toString());
         RequestBody lost_date_ = RequestBody.create(okhttp3.MultipartBody.FORM, lost_date.getText().toString());
         RequestBody status_ = RequestBody.create(okhttp3.MultipartBody.FORM, "pending");
+        RequestBody parent_name_ = RequestBody.create(MultipartBody.FORM, parent_name.getText().toString());
+        RequestBody parent_phone_ = RequestBody.create(MultipartBody.FORM, parent_phone.getText().toString());
         RequestBody date = RequestBody.create(okhttp3.MultipartBody.FORM, now);
 
-        Call<RequestBody> call = getResponse.reportMissing(name_, sex_, age_, color_, height_, description_, address_, date, lost_date_, status_, image);
+        Call<RequestBody> call = getResponse.reportMissing(name_, sex_, age_, color_, height_, description_, address_, date, lost_date_, status_, parent_name_, parent_phone_, image);
         Log.d("status", "sending...");
         call.enqueue(new Callback<RequestBody>() {
             @Override
@@ -225,5 +231,13 @@ public class MissingPersonReport extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
+    }
+    private void setLanguage() {
+        SharedPreferences sharedPreferences = getSharedPreferences("language", MODE_PRIVATE);
+        Locale locale = new Locale(sharedPreferences.getString("language", "om"));
+        Configuration configuration = new Configuration();
+        Locale.setDefault(locale);
+        configuration.locale = locale;
+        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
     }
 }

@@ -4,14 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.FileUtils;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Window;
@@ -21,36 +19,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.izhar.crms.R;
 import com.izhar.crms.api.DjangoApi;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Headers;
 
 
 public class IncidentReport extends AppCompatActivity {
@@ -64,6 +48,8 @@ public class IncidentReport extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setLanguage();
+
         setContentView(R.layout.fragment_incident);
         kebele = findViewById(R.id.kebele);
         type = findViewById(R.id.type);
@@ -86,7 +72,7 @@ public class IncidentReport extends AppCompatActivity {
             if (is_valid())
                 upload();
             else
-                Toast.makeText(this, "please fill the form correctly", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.fill_form), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -100,23 +86,23 @@ public class IncidentReport extends AppCompatActivity {
 
     private boolean is_valid() {
         if (type.getText().toString().length() == 0){
-            type.setError("select type");
+            type.setError(getString(R.string.select_type));
             return false;
         }
         if (kebele.getText().toString().length() == 0){
-            kebele.setError("select kebele");
+            kebele.setError(getString(R.string.select_kebele));
             return false;
         }
         if (place.getText().toString().length() == 0){
-            place.setError("please mention the special place");
+            place.setError(getString(R.string.mention_special_place));
             return false;
         }
         if (description.getText().toString().length() == 0){
-            description.setError("please describe the situation");
+            description.setError(getString(R.string.describe_situation));
             return false;
         }
         if (file == null){
-            Toast.makeText(this, "please take a picture", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.take_picture), Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -176,5 +162,12 @@ public class IncidentReport extends AppCompatActivity {
             }
         });
     }
-
+    private void setLanguage() {
+        SharedPreferences sharedPreferences = getSharedPreferences("language", MODE_PRIVATE);
+        Locale locale = new Locale(sharedPreferences.getString("language", "om"));
+        Configuration configuration = new Configuration();
+        Locale.setDefault(locale);
+        configuration.locale = locale;
+        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
+    }
 }

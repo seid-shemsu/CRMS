@@ -2,7 +2,9 @@ package com.izhar.crms;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -24,6 +26,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,5 +72,14 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1002);
         }
+    }
+
+    private void setLanguage() {
+        SharedPreferences sharedPreferences = getSharedPreferences("language", MODE_PRIVATE);
+        Locale locale = new Locale(sharedPreferences.getString("language", "om"));
+        Configuration configuration = new Configuration();
+        Locale.setDefault(locale);
+        configuration.locale = locale;
+        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
     }
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".intro.Welcome">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:onClick="om"
+            android:text="Afaan Oromo"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:textStyle="bold"
+            android:onClick="am"
+            android:textSize="17sp"
+            android:text="አማርኛ"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:onClick="en"
+            android:text="English"/>
+    </LinearLayout>
+</RelativeLayout>
