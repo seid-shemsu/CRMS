@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -51,6 +52,7 @@ public class Certificate extends Fragment {
     private static File kebele_id_photo_file, photo_file;
 
     private static Uri photo_uri, kebele_id_photo_uri;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,13 +79,12 @@ public class Certificate extends Fragment {
         photo_edit_text.setOnClickListener(v -> {
             takePhoto();
         });
-        
+
         send.setOnClickListener(v -> {
-            if (is_valid()){
+            if (is_valid()) {
                 sendRequest();
-            }
-            else {
-                Toast.makeText(getContext(), "please fill the form correctly", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), R.string.fill_form, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -92,36 +93,36 @@ public class Certificate extends Fragment {
 
 
     private boolean is_valid() {
-        if (name.getText().toString().length() == 0){
-            name.setError("please insert a name");
+        if (name.getText().toString().length() == 0) {
+            name.setError(getString(R.string.insert_name));
             return false;
         }
-        if (f_name.getText().toString().length() == 0){
-            f_name.setError("please insert a name");
+        if (f_name.getText().toString().length() == 0) {
+            f_name.setError(getString(R.string.insert_father));
             return false;
         }
-        if (phone.getText().toString().length() == 0){
-            phone.setError("please enter a phone number");
+        if (phone.getText().toString().length() == 0) {
+            phone.setError(getString(R.string.insert_phone));
             return false;
         }
-        if (kebele.getText().toString().length() == 0){
-            kebele.setError("please select your kebele");
+        if (kebele.getText().toString().length() == 0) {
+            kebele.setError(getString(R.string.insert_kebele));
             return false;
         }
-        if (house_no.getText().toString().length() == 0){
-            house_no.setError("please enter your house number");
+        if (house_no.getText().toString().length() == 0) {
+            house_no.setError(getString(R.string.insert_house));
             return false;
         }
-        if (kebele_id_edit_text.getText().toString().length() == 0){
-            kebele_id_edit_text.setError("please enter you kebele id number");
+        if (kebele_id_edit_text.getText().toString().length() == 0) {
+            kebele_id_edit_text.setError(getString(R.string.insert_kebele_id));
             return false;
         }
-        if (kebele_id_photo_file == null){
-            Toast.makeText(getContext(), "please insert a picture of your kebele id", Toast.LENGTH_SHORT).show();
+        if (kebele_id_photo_file == null) {
+            Toast.makeText(getContext(), getContext().getResources().getString(R.string.insert_kebele_pic), Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (photo_file == null){
-            Toast.makeText(getContext(), "please insert a picture of you", Toast.LENGTH_SHORT).show();
+        if (photo_file == null) {
+            Toast.makeText(getContext(), getContext().getResources().getString(R.string.insert_pic_you), Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -143,7 +144,7 @@ public class Certificate extends Fragment {
         startActivityForResult(intent, 1012);
     }
 
-    private void openFileChooser(){
+    private void openFileChooser() {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(Intent.createChooser(intent, "select image"),
@@ -156,18 +157,27 @@ public class Certificate extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1010 && resultCode != 0) {
             photo_edit_text.setText("uploaded");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                photo_edit_text.setCompoundDrawablesRelative(null, null, getResources().getDrawable(R.drawable.check), null);
+            }
         }
         if (requestCode == 1012 && resultCode != 0) {
             kebele_id_photo_edit_text.setText("uploaded");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                kebele_id_photo_edit_text.setCompoundDrawablesRelative(null, null, getResources().getDrawable(R.drawable.check), null);
+            }
         }
-
-        if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null){
+        if (requestCode == 1001 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             kebele_id_photo_uri = data.getData();
             kebele_id_photo_file = new File(this.getRealPathFromURIForGallery(kebele_id_photo_uri));
             kebele_id_photo_edit_text.setText("uploaded");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                kebele_id_photo_edit_text.setCompoundDrawablesRelative(null, null, getResources().getDrawable(R.drawable.check), null);
+            }
         }
 
     }
+
     public String getRealPathFromURIForGallery(Uri uri) {
         if (uri == null) {
             return null;
@@ -218,12 +228,14 @@ public class Certificate extends Fragment {
             public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
                 Log.d("status", "success");
             }
+
             @Override
             public void onFailure(Call call, Throwable t) {
                 Log.d("status", "failed");
             }
         });
     }
+
     private void setLanguage() {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("language", MODE_PRIVATE);
         Locale locale = new Locale(sharedPreferences.getString("language", "om"));

@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1002 && permissions.length == 0){
-            Toast.makeText(this, "Please grant permission", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.grant_permission), Toast.LENGTH_SHORT).show();
             askPermission();
         }
     }

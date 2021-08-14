@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginVertical="10dp"
-            android:text="please fill the form below to report the incident"
+            android:text="@string/please_fill_the_form_below"
             android:textColor="@color/purple_700"
             android:textSize="17sp" />
 
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:layout_weight=".5"
-                android:hint="Type">
+                android:hint="@string/type">
 
                 <AutoCompleteTextView
                     android:id="@+id/type"
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:layout_weight=".5"
-                android:hint="kebele">
+                android:hint="@string/kebele">
 
                 <AutoCompleteTextView
                     android:id="@+id/kebele"
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="5dp"
-            android:hint="Special place">
+            android:hint="@string/special_place">
 
             <EditText
                 android:id="@+id/special_place"
@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="5dp"
-            android:hint="Description">
+            android:hint="@string/description">
 
             <EditText
                 android:id="@+id/description"
@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="5dp"
-            android:hint="Photo">
+            android:hint="@string/photo">
 
             <EditText
                 android:id="@+id/image"
@@ -124,7 +124,7 @@
             android:layout_marginVertical="10dp"
             android:paddingHorizontal="50dp"
             android:background="@drawable/rounded_button"
-            android:text="send report" />
+            android:text="@string/send_report" />
     </LinearLayout>
 
     <ProgressBar

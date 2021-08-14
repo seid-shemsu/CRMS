@@ -23,7 +23,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:layout_margin="10dp"
-                    android:text="Missed person information"
+                    android:text="@string/missed_person_information"
                     android:textSize="17sp"
                     android:drawableLeft="@drawable/point"
                     android:drawablePadding="10dp"
@@ -31,7 +31,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Full name"
+                    android:hint="@string/full_name"
                     android:layout_marginHorizontal="10dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_marginTop="5dp">
@@ -55,7 +55,7 @@
                         android:layout_width="0dp"
                         android:layout_weight=".33"
                         android:layout_height="wrap_content"
-                        android:hint="Age"
+                        android:hint="@string/age"
                         android:layout_margin="5dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -69,7 +69,7 @@
                         android:layout_width="0dp"
                         android:layout_weight=".33"
                         android:layout_height="wrap_content"
-                        android:hint="Height"
+                        android:hint="@string/height"
                         android:layout_margin="5dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -85,7 +85,7 @@
                         android:layout_weight=".33"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:hint="Sex">
+                        android:hint="@string/gender">
 
                         <AutoCompleteTextView
                             android:id="@+id/sex"
@@ -108,7 +108,7 @@
                         android:layout_weight=".5"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
-                        android:hint="Color">
+                        android:hint="@string/color">
 
                         <AutoCompleteTextView
                             android:id="@+id/color"
@@ -120,7 +120,7 @@
                         android:layout_width="0dp"
                         android:layout_weight=".4"
                         android:layout_height="wrap_content"
-                        android:hint="Lost date"
+                        android:hint="@string/lost_date"
                         android:layout_marginLeft="5dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -145,7 +145,7 @@
                         android:layout_weight=".5"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
-                        android:hint="kebele">
+                        android:hint="@string/kebele">
 
                         <AutoCompleteTextView
                             android:id="@+id/kebele"
@@ -157,7 +157,7 @@
                         android:layout_width="0dp"
                         android:layout_weight=".4"
                         android:layout_height="wrap_content"
-                        android:hint="House No."
+                        android:hint="@string/house_no"
                         android:layout_marginLeft="5dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -172,7 +172,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Description"
+                    android:hint="@string/description"
                     android:layout_marginHorizontal="10dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_marginTop="5dp">
@@ -186,7 +186,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Photo"
+                    android:hint="@string/photo"
                     android:layout_marginHorizontal="10dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_marginTop="5dp">
@@ -214,7 +214,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:layout_margin="10dp"
-                    android:text="Reporter information"
+                    android:text="@string/reporter_information"
                     android:textSize="17sp"
                     android:drawableLeft="@drawable/point"
                     android:drawablePadding="10dp"
@@ -223,7 +223,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Full name"
+                    android:hint="@string/full_name"
                     android:layout_marginHorizontal="10dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_marginTop="5dp">
@@ -238,7 +238,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="phone"
+                    android:hint="@string/phone"
                     android:layout_marginHorizontal="10dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_marginTop="5dp">
@@ -255,7 +255,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="submit report"
+                android:text="@string/submit_report"
                 android:id="@+id/send"
                 android:background="@drawable/rounded_button"
                 android:paddingHorizontal="50dp"

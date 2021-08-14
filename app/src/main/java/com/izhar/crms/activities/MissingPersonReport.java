@@ -221,14 +221,15 @@ public class MissingPersonReport extends AppCompatActivity {
         call.enqueue(new Callback<RequestBody>() {
             @Override
             public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
-                Log.d("status", "sent one");
+                Log.d("status", "sent___");
                 dialog.dismiss();
                 onBackPressed();
             }
             @Override
             public void onFailure(Call call, Throwable t) {
-                Log.d("status", "sent One");
+                Log.d("status", "___sent");
                 dialog.dismiss();
+                onBackPressed();
             }
         });
     }

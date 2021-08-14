@@ -28,11 +28,11 @@ public class Intro extends AhoyOnboarderActivity {
             startActivity(new Intent(this, MainActivity.class));
             finish();
         } else {
-            AhoyOnboarderCard notify = new AhoyOnboarderCard("Notification", "this is description for notification", R.drawable.notify);
-            AhoyOnboarderCard wanted = new AhoyOnboarderCard("Wanted Criminal", "this is description for Wanted Criminal", R.drawable.wanted);
-            AhoyOnboarderCard missed = new AhoyOnboarderCard("Missed Person", "this is description for Missed Person", R.drawable.missed);
-            AhoyOnboarderCard certify = new AhoyOnboarderCard("Certificate", "this is description for Certificate", R.drawable.certi);
-            AhoyOnboarderCard incident = new AhoyOnboarderCard("Incident", "this is description for Incident", R.drawable.incidet);
+            AhoyOnboarderCard notify = new AhoyOnboarderCard(getString(R.string.notification), getString(R.string.desc_notification), R.drawable.notify);
+            AhoyOnboarderCard wanted = new AhoyOnboarderCard(getString(R.string.wanted_criminal), getString(R.string.desc_wanted), R.drawable.wanted);
+            AhoyOnboarderCard missed = new AhoyOnboarderCard(getString(R.string.missed_person), getString(R.string.desc_missed), R.drawable.missed);
+            AhoyOnboarderCard certify = new AhoyOnboarderCard(getString(R.string.certificate), getString(R.string.desc_certificate), R.drawable.certi);
+            AhoyOnboarderCard incident = new AhoyOnboarderCard( getString(R.string.incident), getString(R.string.desc_incident), R.drawable.incidet);
 
             notify.setBackgroundColor(R.color.black_transparent);
             wanted.setBackgroundColor(R.color.black_transparent);
@@ -56,7 +56,7 @@ public class Intro extends AhoyOnboarderActivity {
                 page.setIconLayoutParams(700, 700, 150, 25, 25, 25);
             }
 
-            setFinishButtonTitle("Get Started");
+            setFinishButtonTitle(R.string.get_started);
             showNavigationControls(true);
             //setGradientBackground();
             setColorBackground(R.color.purple_500);

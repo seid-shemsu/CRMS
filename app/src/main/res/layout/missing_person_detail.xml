@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
-                    android:text="Name"/>
+                    android:text="@string/name"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight=".7"
@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
-                    android:text="Age"/>
+                    android:text="@string/age"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight=".7"
@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
-                    android:text="Height"/>
+                    android:text="@string/height"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight=".7"
@@ -85,13 +85,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".3"
                     android:layout_height="wrap_content"
-                    android:textSize="17sp"
                     android:layout_margin="5dp"
-                    android:text="Color"/>
+                    android:text="@string/color"
+                    android:layout_weight=".3"
+                    android:textSize="17sp" />
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight=".7"
@@ -111,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
-                    android:text="Sex"/>
+                    android:text="@string/gender"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight=".7"
@@ -131,7 +132,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
-                    android:text="Address"/>
+                    android:text="@string/address"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight=".7"
@@ -151,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
-                    android:text="Status"/>
+                    android:text="@string/status"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight=".7"
@@ -171,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
-                    android:text="Date"/>
+                    android:text="@string/date"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight=".7"
@@ -191,7 +192,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
-                    android:text="Description"/>
+                    android:text="@string/description"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight=".7"
@@ -211,7 +212,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
-                    android:text="Parent"/>
+                    android:text="@string/parent"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight=".7"
@@ -224,7 +225,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Call parent"
+                android:text="@string/call_parent"
                 android:backgroundTint="@color/purple_500"
                 android:textColor="@color/white"
                 android:textStyle="bold"

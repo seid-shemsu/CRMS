@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="No missing person has been reported yet."
+        android:text="@string/no_wanted_person_has_been_reported_yet"
         android:textColor="@color/black"
         android:visibility="gone" />
 

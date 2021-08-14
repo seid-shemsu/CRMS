@@ -89,12 +89,9 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
                 }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), error.getMessage() + " ", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
+        }, error -> {
+            Toast.makeText(getContext(), error.getMessage() + " ", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
         });
         requestQueue.add(stringRequest);
         return root;

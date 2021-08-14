@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="read more"
+            android:text="@string/read_more"
             android:layout_gravity="right"
             android:id="@+id/read_more"/>
     </LinearLayout>
