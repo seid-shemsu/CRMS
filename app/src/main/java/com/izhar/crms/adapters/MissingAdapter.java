@@ -24,6 +24,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.izhar.crms.R;
 import com.izhar.crms.api.DjangoApi;
 import com.izhar.crms.objects.MissingPerson;
@@ -85,7 +86,7 @@ public class MissingAdapter extends RecyclerView.Adapter<MissingAdapter.Holder> 
     }
 
     private void showDetail(int position) {
-        Dialog dialog = new Dialog(context);
+        BottomSheetDialog dialog = new BottomSheetDialog(context);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

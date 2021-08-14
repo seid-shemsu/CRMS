@@ -3,6 +3,7 @@ package com.izhar.crms.intro;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -23,23 +24,21 @@ public class Intro extends AhoyOnboarderActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setLanguage();
-        if (getSharedPreferences("status", MODE_PRIVATE).getBoolean("started", false)) {
+        if (!getSharedPreferences("status", MODE_PRIVATE).getBoolean("started", false)) {
             startActivity(new Intent(this, MainActivity.class));
             finish();
-        }
-        else {
-            AhoyOnboarderCard notify = new AhoyOnboarderCard("Notification", "", R.drawable.notify);
-            AhoyOnboarderCard wanted = new AhoyOnboarderCard("Wanted Criminal", "", R.drawable.wanted);
-            AhoyOnboarderCard missed = new AhoyOnboarderCard("Missed Person", "", R.drawable.missed);
-            AhoyOnboarderCard certify = new AhoyOnboarderCard("Certificate", "", R.drawable.certi);
-            AhoyOnboarderCard incident = new AhoyOnboarderCard("Incident", "", R.drawable.incidet);
+        } else {
+            AhoyOnboarderCard notify = new AhoyOnboarderCard("Notification", "this is description for notification", R.drawable.notify);
+            AhoyOnboarderCard wanted = new AhoyOnboarderCard("Wanted Criminal", "this is description for Wanted Criminal", R.drawable.wanted);
+            AhoyOnboarderCard missed = new AhoyOnboarderCard("Missed Person", "this is description for Missed Person", R.drawable.missed);
+            AhoyOnboarderCard certify = new AhoyOnboarderCard("Certificate", "this is description for Certificate", R.drawable.certi);
+            AhoyOnboarderCard incident = new AhoyOnboarderCard("Incident", "this is description for Incident", R.drawable.incidet);
 
-
-        /*notify.setBackgroundColor(Color.TRANSPARENT);
-        wanted.setBackgroundColor(R.color.black_transparent);
-        missed.setBackgroundColor(R.color.black_transparent);
-        certify.setBackgroundColor(R.color.black_transparent);
-        incident.setBackgroundColor(R.color.black_transparent);*/
+            notify.setBackgroundColor(R.color.black_transparent);
+            wanted.setBackgroundColor(R.color.black_transparent);
+            missed.setBackgroundColor(R.color.black_transparent);
+            certify.setBackgroundColor(R.color.black_transparent);
+            incident.setBackgroundColor(R.color.black_transparent);
 
             List<AhoyOnboarderCard> pages = new ArrayList<>();
 
@@ -51,15 +50,16 @@ public class Intro extends AhoyOnboarderActivity {
 
             for (AhoyOnboarderCard page : pages) {
                 page.setTitleColor(R.color.white);
-                //page.setDescriptionColor(R.color.grey_200);
-                //page.setTitleTextSize(dpToPixels(12, this));
-                //page.setDescriptionTextSize(dpToPixels(8, this));
-                //page.setIconLayoutParams(width, height, marginTop, marginLeft, marginRight, marginBottom);
+                page.setDescriptionColor(R.color.grey_200);
+                page.setTitleTextSize(dpToPixels(18, this));
+                page.setDescriptionTextSize(dpToPixels(12, this));
+                page.setIconLayoutParams(700, 700, 150, 25, 25, 25);
             }
 
             setFinishButtonTitle("Get Started");
             showNavigationControls(true);
-            setGradientBackground();
+            //setGradientBackground();
+            setColorBackground(R.color.purple_500);
 
             //set the button style you created
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,24 +14,27 @@
             android:orientation="vertical">
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="250dp"
                 android:id="@+id/image"
                 android:layout_margin="5dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/purple_500"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".3"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
                     android:text="Name"/>
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".7"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="17sp"
@@ -44,15 +47,14 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".3"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
                     android:text="Age"/>
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".7"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="17sp"
@@ -65,15 +67,14 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".3"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
                     android:text="Height"/>
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".7"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="17sp"
@@ -86,15 +87,14 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".3"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
                     android:text="Color"/>
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".7"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="17sp"
@@ -107,15 +107,14 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".3"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
                     android:text="Sex"/>
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".7"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="17sp"
@@ -128,15 +127,14 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".3"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
                     android:text="Address"/>
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".7"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="17sp"
@@ -149,15 +147,14 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".3"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
                     android:text="Status"/>
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".7"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="17sp"
@@ -170,15 +167,14 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".3"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
                     android:text="Date"/>
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".7"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="17sp"
@@ -191,15 +187,14 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".3"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
                     android:text="Description"/>
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".7"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="17sp"
@@ -212,15 +207,14 @@
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".3"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
                     android:textSize="17sp"
                     android:layout_margin="5dp"
                     android:text="Parent"/>
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight=".5"
+                    android:layout_weight=".7"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="17sp"
@@ -231,6 +225,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Call parent"
+                android:backgroundTint="@color/purple_500"
+                android:textColor="@color/white"
+                android:textStyle="bold"
                 android:layout_margin="5dp"
                 android:id="@+id/call"/>
         </LinearLayout>

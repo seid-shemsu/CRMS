@@ -31,6 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.izhar.crms.R;
 import com.izhar.crms.activities.MissingPersonReport;
 import com.izhar.crms.adapters.MissingAdapter;
@@ -55,6 +56,7 @@ public class Missing extends Fragment {
     private List<MissingPerson> missingPeople;
     private TextView no;
     private Dialog dialog;
+    private FloatingActionButton fab;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setLanguage();
@@ -64,8 +66,12 @@ public class Missing extends Fragment {
         dialog.show();
         recyclerView = root.findViewById(R.id.recycler);
         no = root.findViewById(R.id.no);
+        fab = root.findViewById(R.id.fab);
         missingPeople = new ArrayList<>();
 
+        fab.setOnClickListener(v -> {
+            startActivity(new Intent(getContext(), MissingPersonReport.class));
+        });
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
 
@@ -105,29 +111,13 @@ public class Missing extends Fragment {
                 dialog.dismiss();
             }
         }, error -> {
-            Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), error.getMessage() + "", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
         return root;
     }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        super.onOptionsItemSelected(item);
-        if (item.getItemId() == R.id.add) {
-            startActivity(new Intent(getContext(), MissingPersonReport.class));
-        }
-        return true;
-    }
-
 
     private void initDialog() {
         dialog = new Dialog(getContext());

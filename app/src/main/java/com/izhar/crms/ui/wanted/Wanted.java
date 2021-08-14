@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +64,6 @@ public class Wanted extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
-
         String url = DjangoApi.host_ip + "criminals/";
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
@@ -89,8 +89,10 @@ public class Wanted extends Fragment {
                 }
                 adapter = new WantedAdapter(getContext(), wantedPeople);
                 recyclerView.setAdapter(adapter);
+                dialog.dismiss();
             } catch (Exception e) {
                 Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
+                dialog.dismiss();
             }
         }, error -> {
             Toast.makeText(getContext(), error.getMessage() + " ", Toast.LENGTH_SHORT).show();

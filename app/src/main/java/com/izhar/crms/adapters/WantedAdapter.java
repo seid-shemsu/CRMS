@@ -24,6 +24,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.izhar.crms.R;
 import com.izhar.crms.api.DjangoApi;
 import com.izhar.crms.objects.WantedPerson;
@@ -100,7 +101,7 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
 
     private void showDetail(int position) {
         WantedPerson _person = wantedPeople.get(position);
-        Dialog dialog = new Dialog(context);
+        BottomSheetDialog dialog = new BottomSheetDialog(context);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCanceledOnTouchOutside(false);
@@ -141,6 +142,7 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
                     load_dialog.show();
                     Toast.makeText(context, "Reporting on progress", Toast.LENGTH_SHORT).show();
                     reportCriminal(position, kebele.getText().toString(), special_place.getText().toString());
+
                 }
                 else {
                     Toast.makeText(context, "please fill the required fields", Toast.LENGTH_SHORT).show();
@@ -169,10 +171,12 @@ public class WantedAdapter extends RecyclerView.Adapter<WantedAdapter.Holder> {
             @Override
             public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
                 Log.d("status", "success");
+                load_dialog.dismiss();
             }
             @Override
             public void onFailure(Call call, Throwable t) {
                 Log.d("status", "failed");
+                load_dialog.dismiss();
             }
         });
     }
